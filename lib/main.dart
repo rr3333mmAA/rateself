@@ -40,34 +40,62 @@ class _RatePageState extends State<RatePage> {
   }
 
   void _showUndoOverlay(BuildContext context, _RatingEntry entry) {
-    final overlay = Overlay.of(context, rootOverlay: true);
+    final overlay = Overlay.of(context, rootOverlay: true)!;
     late OverlayEntry overlayEntry;
+
+    final animationController = AnimationController(
+      vsync: Navigator.of(context),
+      duration: Duration(milliseconds: 250),
+    );
+
+    final animation = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut,
+    );
+
+    final slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(animation);
 
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         bottom: 100,
         left: 20,
         right: 20,
-        child: CupertinoPopupSurface(
-          child: Container(
-            color: CupertinoColors.systemGrey.withOpacity(0.95),
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Rating ${entry.value} added'),
-                CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    setState(() {
-                      entries.remove(entry);
-                      totalScore -= entry.value;
-                    });
-                    overlayEntry.remove();
-                  },
-                  child: Text('Undo'),
+        child: SlideTransition(
+          position: slideAnimation,
+          child: FadeTransition(
+            opacity: animation,
+            child: CupertinoPopupSurface(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: CupertinoColors.systemGrey,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              ],
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Rating ${entry.value} added'),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        setState(() {
+                          entries.remove(entry);
+                          totalScore -= entry.value;
+                        });
+                        animationController.reverse();
+                        Future.delayed(Duration(milliseconds: 200), () {
+                          overlayEntry.remove();
+                          animationController.dispose();
+                        });
+                      },
+                      child: Text('Undo'),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -75,11 +103,19 @@ class _RatePageState extends State<RatePage> {
     );
 
     overlay.insert(overlayEntry);
+    animationController.forward();
 
     Future.delayed(Duration(seconds: 3)).then((_) {
-      if (overlayEntry.mounted) overlayEntry.remove();
+      if (overlayEntry.mounted) {
+        animationController.reverse();
+        Future.delayed(Duration(milliseconds: 200), () {
+          if (overlayEntry.mounted) overlayEntry.remove();
+          animationController.dispose();
+        });
+      }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +174,7 @@ class _RatePageState extends State<RatePage> {
   Widget _ratingButton(int value) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      color: CupertinoColors.black,
-      borderRadius: BorderRadius.circular(30),
+      color: CupertinoColors.white,
       minSize: 64,
       onPressed: () => _addRating(value),
       child: Container(
@@ -150,7 +185,7 @@ class _RatePageState extends State<RatePage> {
           value.toString(),
           style: TextStyle(
             fontSize: 24,
-            color: CupertinoColors.white,
+            color: CupertinoColors.black,
             fontFeatures: [FontFeature.tabularFigures()], // monospaced numbers
           ),
         ),
