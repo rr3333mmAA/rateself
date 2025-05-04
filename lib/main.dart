@@ -70,7 +70,7 @@ class _RatePageState extends State<RatePage> {
             child: CupertinoPopupSurface(
               child: Container(
                 decoration: BoxDecoration(
-                  color: CupertinoColors.systemGrey,
+                  color: CupertinoColors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -91,7 +91,13 @@ class _RatePageState extends State<RatePage> {
                           animationController.dispose();
                         });
                       },
-                      child: Text('Undo'),
+                      child: Text(
+                        'Undo',
+                        style: TextStyle(
+                          color: CupertinoColors.destructiveRed,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
