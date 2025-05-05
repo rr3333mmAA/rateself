@@ -133,15 +133,6 @@ class _RatePageState extends State<RatePage> {
         child: Column(
           children: [
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _ratingButton(-1),
-                _ratingButton(0),
-                _ratingButton(1),
-              ],
-            ),
-            SizedBox(height: 20),
             Text(
               'Total Score: $totalScore',
               style: TextStyle(fontSize: 20),
@@ -170,6 +161,14 @@ class _RatePageState extends State<RatePage> {
                   );
                 },
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _ratingButton(-1),
+                _ratingButton(0),
+                _ratingButton(1),
+              ]
             ),
           ],
         ),
