@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 
 void main() {
@@ -28,6 +30,26 @@ class _RatePageState extends State<RatePage> {
   List<_RatingEntry> entries = [];
   int totalScore = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  void _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEntries = prefs.getString('entries');
+    final savedScore = prefs.getInt('totalScore');
+
+    if (savedEntries != null) {
+      final decoded = jsonDecode(savedEntries) as List;
+      setState(() {
+        entries = decoded.map((e) => _RatingEntry.fromJson(e)).toList();
+        totalScore = savedScore ?? 0;
+      });
+    }
+  }
+
   void _addRating(int value) {
     final entry = _RatingEntry(value, DateTime.now());
 
@@ -35,8 +57,16 @@ class _RatePageState extends State<RatePage> {
       entries.add(entry);
       totalScore += value;
     });
+    _saveData();
 
     _showUndoOverlay(context, entry);
+  }
+
+  void _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final entryJson = entries.map((e) => e.toJson()).toList();
+    prefs.setString('entries', jsonEncode(entryJson));
+    prefs.setInt('totalScore', totalScore);
   }
 
   void _showUndoOverlay(BuildContext context, _RatingEntry entry) {
@@ -208,4 +238,16 @@ class _RatingEntry {
   final DateTime time;
 
   _RatingEntry(this.value, this.time);
+
+  Map<String, dynamic> toJson() => {
+    'value': value,
+    'time': time.toIso8601String(),
+  };
+
+  static _RatingEntry fromJson(Map<String, dynamic> json) {
+    return _RatingEntry(
+      json['value'],
+      DateTime.parse(json['time']),
+    );
+  }
 }
