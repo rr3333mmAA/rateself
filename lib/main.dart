@@ -38,6 +38,10 @@ class _RatePageState extends State<RatePage> {
 
   void _loadData() async {
     final prefs = await SharedPreferences.getInstance();
+    final didReset = await _checkDateReset();
+
+    if (didReset) return;
+
     final savedEntries = prefs.getString('entries');
     final savedScore = prefs.getInt('totalScore');
 
@@ -50,7 +54,29 @@ class _RatePageState extends State<RatePage> {
     }
   }
 
-  void _addRating(int value) {
+
+  Future<bool> _checkDateReset() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastDate = prefs.getString('lastDate');
+    final today = DateTime.now().toIso8601String().split('T')[0];
+
+    if (lastDate != today) {
+      setState(() {
+        entries.clear();
+        totalScore = 0;
+      });
+      prefs.remove('entries');
+      prefs.remove('totalScore');
+      prefs.setString('lastDate', today);
+      return true;
+    }
+
+    return false;
+  }
+
+  void _addRating(int value) async {
+    await _checkDateReset();
+
     final entry = _RatingEntry(value, DateTime.now());
 
     setState(() {
@@ -67,6 +93,7 @@ class _RatePageState extends State<RatePage> {
     final entryJson = entries.map((e) => e.toJson()).toList();
     prefs.setString('entries', jsonEncode(entryJson));
     prefs.setInt('totalScore', totalScore);
+    prefs.setString('lastDate', DateTime.now().toIso8601String().split('T')[0]);
   }
 
   void _showUndoOverlay(BuildContext context, _RatingEntry entry) {
