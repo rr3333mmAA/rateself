@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 
@@ -76,6 +77,8 @@ class _RatePageState extends State<RatePage> {
 
   void _addRating(int value) async {
     await _checkDateReset();
+
+    HapticFeedback.mediumImpact();
 
     final entry = _RatingEntry(value, DateTime.now());
 
@@ -183,9 +186,6 @@ class _RatePageState extends State<RatePage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('rateself'),
-      ),
       child: SafeArea(
         child: Column(
           children: [
