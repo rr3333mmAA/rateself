@@ -30,6 +30,7 @@ class RatePage extends StatefulWidget {
 class _RatePageState extends State<RatePage> {
   List<_RatingEntry> entries = [];
   int totalScore = 0;
+  OverlayEntry? _currentUndoOverlay;
 
   @override
   void initState() {
@@ -100,6 +101,8 @@ class _RatePageState extends State<RatePage> {
   }
 
   void _showUndoOverlay(BuildContext context, _RatingEntry entry) {
+    _currentUndoOverlay?.remove();
+
     final overlay = Overlay.of(context, rootOverlay: true)!;
     late OverlayEntry overlayEntry;
 
@@ -127,40 +130,48 @@ class _RatePageState extends State<RatePage> {
           position: slideAnimation,
           child: FadeTransition(
             opacity: animation,
-            child: CupertinoPopupSurface(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: CupertinoColors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Rating ${entry.value} added'),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        setState(() {
-                          entries.remove(entry);
-                          totalScore -= entry.value;
-                        });
-                        animationController.reverse();
-                        Future.delayed(Duration(milliseconds: 200), () {
-                          overlayEntry.remove();
-                          animationController.dispose();
-                        });
-                      },
-                      child: Text(
-                        'Undo',
-                        style: TextStyle(
-                          color: CupertinoColors.destructiveRed,
-                          fontWeight: FontWeight.bold,
-                        ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: CupertinoColors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: CupertinoColors.systemGrey.withOpacity(0.1),
+                    blurRadius: 20,
+                    offset: Offset(0, 6),
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Rating ${entry.value} added'),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      setState(() {
+                        entries.remove(entry);
+                        totalScore -= entry.value;
+                      });
+                      animationController.reverse();
+                      Future.delayed(Duration(milliseconds: 200), () {
+                        if (overlayEntry.mounted) overlayEntry.remove();
+                        animationController.dispose();
+                        if (_currentUndoOverlay == overlayEntry) {
+                          _currentUndoOverlay = null;
+                        }
+                      });
+                    },
+                    child: Text(
+                      'Undo',
+                      style: TextStyle(
+                        color: CupertinoColors.destructiveRed,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -169,6 +180,7 @@ class _RatePageState extends State<RatePage> {
     );
 
     overlay.insert(overlayEntry);
+    _currentUndoOverlay = overlayEntry;
     animationController.forward();
 
     Future.delayed(Duration(seconds: 3)).then((_) {
@@ -177,6 +189,9 @@ class _RatePageState extends State<RatePage> {
         Future.delayed(Duration(milliseconds: 200), () {
           if (overlayEntry.mounted) overlayEntry.remove();
           animationController.dispose();
+          if (_currentUndoOverlay == overlayEntry) {
+            _currentUndoOverlay = null;
+          }
         });
       }
     });
