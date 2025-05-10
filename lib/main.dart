@@ -16,6 +16,13 @@ class RateSelfApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: CupertinoColors.black,
         scaffoldBackgroundColor: CupertinoColors.white,
+        textTheme: CupertinoTextThemeData(
+          textStyle: TextStyle(
+            fontFamily: 'JetBrainsMono',
+            fontSize: 16,
+            color: CupertinoColors.black,
+          ),
+        ),
       ),
       home: RatePage(),
     );
@@ -167,7 +174,7 @@ class _RatePageState extends State<RatePage> {
                       'Undo',
                       style: TextStyle(
                         color: CupertinoColors.destructiveRed,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: 'JetBrainsMono',
                       ),
                     ),
                   ),
@@ -264,6 +271,7 @@ class _RatePageState extends State<RatePage> {
             fontSize: 24,
             color: CupertinoColors.black,
             fontFeatures: [FontFeature.tabularFigures()], // monospaced numbers
+            fontFamily: 'JetBrainsMono',
           ),
         ),
       ),
