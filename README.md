@@ -1,16 +1,34 @@
 # rateself
 
-A new Flutter project.
+Minimalist daily rating app built in Flutter.  
+Track your actions with just one tap: `-1`, `0`, or `+1`. No clutter, no distractions.
 
-## Getting Started
+## ✨ Features
 
-This project is a starting point for a Flutter application.
+- 🖱 One-tap daily ratings: -1, 0, or +1
+- 🧮 Live total score for today
+- 🔁 Undo support with smooth animation
+- 🕛 Auto-reset at midnight
+- 💥 Haptic feedback on rating
+- 🧼 Clean, iOS-native design using `Cupertino` widgets  
+- 💾 JetBrains Mono font for coding-style digits  
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Getting Started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. Clone the repo:
+```bash
+git clone https://github.com/yourusername/rateself.git
+cd rateself
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2. Install dependencies:
+```bash
+flutter pub get
+```
+
+3. Run on iOS:
+```bash
+flutter run
+```
+
+> Make sure [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation) is installed if you use iOS
