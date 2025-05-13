@@ -29,7 +29,6 @@ class RatingButton extends StatelessWidget {
             color: CupertinoColors.black,
             fontFeatures: [FontFeature.tabularFigures()],
             fontFamily: 'JetBrainsMono',
-            fontWeight: FontWeight.w700,
           ),
         ),
       ),

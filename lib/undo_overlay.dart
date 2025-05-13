@@ -12,6 +12,8 @@ class UndoOverlay {
     required VoidCallback onUndo,
   }) {
     _current?.remove();
+    bool disposed = false;
+    bool tapped = false;
 
     final overlay = Overlay.of(context, rootOverlay: true)!;
     final animationController = AnimationController(
@@ -60,12 +62,20 @@ class UndoOverlay {
                   CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: () {
+                      if (tapped) return;
+                      tapped = true;
+
                       onUndo();
+
                       animationController.reverse();
+
                       Future.delayed(Duration(milliseconds: 200), () {
                         if (overlayEntry.mounted) overlayEntry.remove();
-                        animationController.dispose();
-                        if (_current == overlayEntry) _current = null;
+                        if (!disposed) {
+                          disposed = true;
+                          if (_current == overlayEntry) _current = null;
+                          animationController.dispose();
+                        }
                       });
                     },
                     child: Text(
@@ -93,8 +103,11 @@ class UndoOverlay {
         animationController.reverse();
         Future.delayed(Duration(milliseconds: 200), () {
           if (overlayEntry.mounted) overlayEntry.remove();
-          animationController.dispose();
-          if (_current == overlayEntry) _current = null;
+          if (!disposed) {
+            disposed = true;
+            if (_current == overlayEntry) _current = null;
+            animationController.dispose();
+          }
         });
       }
     });
