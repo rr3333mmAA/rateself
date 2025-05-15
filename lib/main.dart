@@ -115,6 +115,20 @@ class _RatePageState extends State<RatePage> {
     prefs.setString('lastDate', DateTime.now().toIso8601String().split('T')[0]);
   }
 
+  String _formattedToday() {
+    final now = DateTime.now();
+    final weekdays = [
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+    ];
+    final months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    final weekday = weekdays[now.weekday - 1];
+    final month = months[now.month - 1];
+    return '$weekday, ${now.day} $month';
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -122,6 +136,14 @@ class _RatePageState extends State<RatePage> {
         child: Column(
           children: [
             SizedBox(height: 20),
+            Text(
+              _formattedToday(),
+              style: TextStyle(
+                fontSize: 18,
+                color: CupertinoColors.systemGrey,
+              ),
+            ),
+            SizedBox(height: 4),
             Text(
               'Total Score: $totalScore',
               style: TextStyle(fontSize: 20),
