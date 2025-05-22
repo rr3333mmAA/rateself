@@ -1,11 +1,16 @@
 # rateself
 
+
+<div style="text-align: center; margin: 10px;">
+  <img src="assets/icon/icon.png" alt="rateself" style="width: 120px; border-radius: 22%; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+</div>
+
 Minimalist daily rating app built in Flutter.  
-Track your actions with just one tap: `-1`, `0`, or `+1`. No clutter, no distractions.
+Track your actions with just one tap: `-1`, `0`, or `1`. No clutter, no distractions.
 
 ## ✨ Features
 
-- 🖱 One-tap daily ratings: -1, 0, or +1
+- 🖱 One-tap daily ratings: -1, 0, or 1
 - 🧮 Live total score for today
 - 🔁 Undo support with smooth animation
 - 🕛 Auto-reset at midnight
