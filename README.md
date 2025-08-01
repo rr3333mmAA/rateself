@@ -22,7 +22,7 @@ Track your actions with just one tap: `-1`, `0`, or `1`. No clutter, no distract
 
 1. Clone the repo:
 ```bash
-git clone https://github.com/yourusername/rateself.git
+git clone https://github.com/rr3333mmAA/rateself.git
 cd rateself
 ```
 
